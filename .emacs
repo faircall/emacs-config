@@ -1,15 +1,26 @@
+;; Add these near the top of your config, after the (require 'ido) line
+(setq ido-default-file-method 'selected-window)
+(setq ido-default-directory "C:/Users/weiju/Documents/GitHub/")
+(setq ido-default-buffer-method 'selected-window)
+
+;; And also set the initial working directory
+(setq command-line-default-directory "C:/Users/weiju/Documents/GitHub/")
+(setq initial-buffer-choice "C:/Users/weiju/Documents/GitHub/")
+
+
+
+
 ;; Set the directory for backup files
 (setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
 
-;; Set the default directory
-(setq default-directory "C:/Users/weiju/Documents/GitHub/")
 
-;; Change the startup directory to your desired path
-(defun my-startup-directory ()
-  (cd "C:/Users/weiju/Documents/GitHub/"))
 
-;; Add the function to the Emacs startup hook
-(add-hook 'emacs-startup-hook 'my-startup-directory)
+
+
+
+
+
+
 
 
 ;; Ensure the backup directory exists
@@ -27,6 +38,43 @@
 
 
 
+
+;; slightly broken attempt at beef mode indentation
+
+;; Load cc-mode for C-style languages
+(require 'cc-mode)
+(require 'csharp-mode)
+
+;; Define a custom Beef mode with C#-style indentation
+(define-derived-mode beef-mode csharp-mode "Beef"
+  "Major mode for editing Beef programming language files."
+  (setq c-basic-offset 4)
+  (setq indent-tabs-mode nil))
+
+;; Automatically use beef-mode for .bf files
+(add-to-list 'auto-mode-alist '("\\.bf\\'" . beef-mode))
+
+;; Function to customize indentation for Beef mode using C# settings
+(defun my-beef-mode-custom-indent ()
+  (c-set-offset 'access-label '/)  ;; Align access specifier braces correctly
+  (setq c-basic-offset 4)          ;; Set basic indentation to 4 spaces
+  (setq tab-width 4)               ;; Set tab width to 4 spaces
+  (setq indent-tabs-mode nil))     ;; Use spaces instead of tabs
+
+;; Add the custom indentation function to the Beef mode hook
+(add-hook 'beef-mode-hook 'my-beef-mode-custom-indent)
+
+
+
+
+;; Enable subword-mode for all programming modes
+(add-hook 'prog-mode-hook 'subword-mode)
+
+
+
+
+
+
 (c-add-style "my-style" 
 	     '("linux"
 	       (c-basic-offset . 4)
@@ -34,6 +82,8 @@
                         (statement-case-open . +)
                         (brace-list-open . 0)
                         (substatement-open . 0)))))
+
+
 (setq c-default-style "my-style")
 (setq confirm-kill-emacs 'y-or-n-p)
 (require 'package)
@@ -46,7 +96,7 @@
    ["#2d3743" "#ff4242" "#74af68" "#dbdb95" "#34cae2" "#008b8b" "#00ede1" "#e1e1e0"])
  '(custom-enabled-themes '(deeper-blue))
  '(package-selected-packages
-   '(multiple-cursors ## beef-mode pdf-tools haskell-mode zig-mode)))
+   '(csharp-mode multiple-cursors ## beef-mode pdf-tools haskell-mode zig-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -62,7 +112,7 @@
 (package-initialize)
 
 (load-library "view")
-(require 'cc-mode)
+;;(require 'cc-mode)
 (require 'ido)
 (require 'compile)
 (ido-mode t)
