@@ -171,6 +171,47 @@
 (set-background-color "#090C1D")
 (set-cursor-color "#40FF40")
 
+										; presentation mode
+(defvar presentation-mode-map nil
+  "Keymap for presentation-mode.")
+
+(if presentation-mode-map
+    nil
+  (setq presentation-mode-map (make-sparse-keymap)))
+
+(defun create-padded-header (title)
+  "Create a header with the TITLE padded by dashes to fill line."
+  (interactive "sEnter header title: ")
+  (let* ((total-width 100)  ; adjust this number for your desired line width
+         (title-length (length title))
+         (padding (/ (- total-width title-length) 2))
+         (left-dashes (make-string padding ?-))
+         (right-dashes (make-string (- total-width title-length padding) ?-)))
+    (insert (concat left-dashes title right-dashes "\n"))))
+
+(defun presentation-scroll-up ()
+  "Scroll up exactly one page in presentation mode."
+  (interactive)
+  (scroll-up
+   (- (window-height) 1)))
+
+(defun presentation-scroll-down ()
+  "Scroll down exactly one page in presentation mode."
+  (interactive)
+  (scroll-down
+   (- (window-height) 1)))
+
+(define-derived-mode presentation-mode text-mode "Presentation"
+  "Major mode for presentation files."
+  (use-local-map presentation-mode-map)
+  (setq-local scroll-conservatively 0)
+  (setq-local scroll-margin 0))
+
+(define-key presentation-mode-map (kbd "C-c h") #'create-padded-header)
+(define-key presentation-mode-map (kbd "C-v") #'presentation-scroll-up)
+(define-key presentation-mode-map (kbd "M-v") #'presentation-scroll-down)
+
+(add-to-list 'auto-mode-alist '("\\.presentation\\'" . presentation-mode))
 
 
 
